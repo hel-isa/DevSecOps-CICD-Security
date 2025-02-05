@@ -1,0 +1,40 @@
+name: DevSecOps CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Code Formatter (Black)
+        run: |
+          source .venv/bin/activate
+          pip install black
+          black --check .
+
+      - name: Run SAST Security Scan (Bandit)
+        run: |
+          source .venv/bin/activate
+          pip install bandit
+          bandit -r app/
