@@ -27,8 +27,6 @@ jobs:
 
       - name: Run Code Formatter (Black)
         run: |
-          source .venv/bin/activate
-          pip install black
           black --check .
 
       - name: Run SAST Security Scan (Bandit)
