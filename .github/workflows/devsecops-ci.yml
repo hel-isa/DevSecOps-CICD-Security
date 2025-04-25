@@ -10,6 +10,12 @@ jobs:
   security:
     name: Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
 
     steps:
       - name: Checkout Code
@@ -31,10 +37,7 @@ jobs:
         run: |
           source .venv/bin/activate
           pip install black
-          black --check .
+          black --check --diff .
 
-      - name: Run SAST Security Scan (Bandit)
-        run: |
-          source .venv/bin/activate
-          pip install bandit
-          bandit -r app/
+      - name: Run SAST Security Scan (Perform Bandit Analysis)
+        uses: PyCQA/bandit-action@v1
